@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.0.3",
+    "Version": "4.0.4",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -25,17 +25,10 @@
     },
     "DatabaseConnector": {
       "Package": "DatabaseConnector",
-      "Version": "3.0.0",
+      "Version": "4.0.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "165495df76221cd0c3e1c4a004d6599c"
-    },
-    "DatabaseConnectorJars": {
-      "Package": "DatabaseConnectorJars",
-      "Version": "1.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "0a923f7859e5fabb967660aa0f61ef1e"
+      "Hash": "07b629b94dd031fc56a8e2d99f64f245"
     },
     "Eunomia": {
       "Package": "Eunomia",
@@ -51,10 +44,10 @@
     },
     "RSQLite": {
       "Package": "RSQLite",
-      "Version": "2.2.3",
+      "Version": "2.2.5",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "a281e35445a1c4fc7ccfc62f01bb1e2d"
+      "Hash": "b9b7248fa58ec21fe41f38083e75d568"
     },
     "Rcpp": {
       "Package": "Rcpp",
@@ -65,10 +58,10 @@
     },
     "SqlRender": {
       "Package": "SqlRender",
-      "Version": "1.6.8",
+      "Version": "1.7.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "d1628f3a366f6eef647a6ece0b4b5ffc"
+      "Hash": "c9f77eea223a6942eea0072b72e6ceb9"
     },
     "bit": {
       "Package": "bit",
@@ -93,17 +86,10 @@
     },
     "cachem": {
       "Package": "cachem",
-      "Version": "1.0.3",
+      "Version": "1.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "803b5d36ec15fe3314905749a5619767"
-    },
-    "digest": {
-      "Package": "digest",
-      "Version": "0.6.27",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "a0cbe758a531d054b537d16dff4d58a1"
+      "Hash": "2703a46dcabfb902f10060b2bca9f708"
     },
     "ellipsis": {
       "Package": "ellipsis",
@@ -163,10 +149,10 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.12.5",
+      "Version": "0.13.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5c0cdb37f063c58cdab3c7e9fbb8bd2c"
+      "Hash": "079cb1f03ff972b30401ed05623cbe92"
     },
     "rlang": {
       "Package": "rlang",
@@ -187,7 +173,7 @@
       "Version": "1.4.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "0759e6b6c0957edb1311028a49a35e76"
+      "Hash": "fe9e99f286f989ff2e85a2e23858d424"
     },
     "triebeard": {
       "Package": "triebeard",
@@ -205,10 +191,10 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.3.6",
+      "Version": "0.3.7",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5cf1957f93076c19fdc81d01409d240b"
+      "Hash": "5540dc30a203a43a1ce5dc6a89532b3b"
     }
   }
 }
