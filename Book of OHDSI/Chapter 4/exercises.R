@@ -1,4 +1,3 @@
-
 # Exercise 4.4
 
 library('DatabaseConnector')
