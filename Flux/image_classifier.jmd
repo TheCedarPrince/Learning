@@ -1,0 +1,190 @@
+# Image Classification of Alzheimer MRI Scans
+
+**Description:** Train a deep neural network on the MRI slices dataset of Alzheimer's patients.
+
+```julia
+using Flux
+using Images
+```
+
+## Loading Test Data
+
+Loading the MRI scan label information:
+
+```julia
+non_demented = "alzheimers/test/NonDemented/"
+very_mild_demented = "alzheimers/test/VeryMildDemented/"
+mild_demented = "alzheimers/test/MildDemented/"
+moderate_demented = "alzheimers/test/ModerateDemented/"
+
+paths = [
+    non_demented,
+    very_mild_demented,
+    mild_demented,
+    moderate_demented
+]
+```
+
+```julia
+non_demented_label = 1
+very_mild_demented_label = 2
+mild_demented_label = 3
+moderate_demented_label = 4
+
+labels = [
+    non_demented_label,
+    very_mild_demented_label,
+    mild_demented_label,
+    moderate_demented_label
+]
+```
+
+```julia
+test_results = Array{Int32}(undef, 5116);
+test_data = Array{Float32}(undef, 128, 128, 5116);
+
+idx = 1
+for label in labels
+    for path in paths
+        for img in readdir(path)
+            img_path = joinpath(path, img)
+            img = Images.load(img_path) |> x -> imresize(x, (128, 128))
+            test_data[:, :, idx] = img
+            test_results[idx] = label
+            idx += 1
+        end
+    end
+end
+
+testing = (features = test_data, targets = test_results)
+```
+
+## Loading Training Data
+
+Loading the MRI scan label information:
+
+```julia
+non_demented = "alzheimers/train/NonDemented/"
+very_mild_demented = "alzheimers/train/VeryMildDemented/"
+mild_demented = "alzheimers/train/MildDemented/"
+moderate_demented = "alzheimers/train/ModerateDemented/"
+
+paths = [
+    non_demented,
+    very_mild_demented,
+    mild_demented,
+    moderate_demented
+]
+```
+
+```julia
+non_demented_label = 1
+very_mild_demented_label = 2
+mild_demented_label = 3
+moderate_demented_label = 4
+
+labels = [
+    non_demented_label,
+    very_mild_demented_label,
+    mild_demented_label,
+    moderate_demented_label
+]
+```
+
+```julia
+train_results = Array{Int32}(undef, 20484);
+train_data = Array{Float32}(undef, 128, 128, 20484);
+
+idx = 1
+for label in labels
+    for path in paths
+        for img in readdir(path)
+            img_path = joinpath(path, img)
+            img = Images.load(img_path) |> x -> imresize(x, (128, 128))
+            train_data[:, :, idx] = img
+            train_results[idx] = label
+            idx += 1
+        end
+    end
+end
+
+training = (features = train_data, targets = train_results)
+```
+
+## Convenience Functions
+
+```julia
+#=
+    Convenience function to have data altogether in one 
+    place for training. Specifically encoded for MNIST
+    and to support batch training.
+=#
+function simple_loader(data; batchsize::Int=64)
+    x2dim = reshape(data.features, 128^2, :)
+    yhot = Flux.onehotbatch(data.targets, 1:4)
+    Flux.DataLoader((x2dim, yhot); batchsize, shuffle=true)
+end
+
+#=
+    Calculates accuracy for a given model
+=#
+function simple_accuracy(model, data)
+    (x, y) = only(simple_loader(data; batchsize=length(data.targets)))
+    y_hat = model(x)
+    iscorrect = Flux.onecold(y_hat) .== Flux.onecold(y)
+    acc = round(100 * mean(iscorrect); digits=2)
+end
+```
+
+## Setting Up Deep Neural Network
+
+First, I define a sequential chain of layers to be called with their associated activation functions:
+
+```julia
+mri_model = Chain(
+    Dense(128^2 => 32, relu),
+    Dropout(0.1),
+    Dense(32 => 16, relu),
+    Dropout(0.1),
+    Dense(16 => 4, relu),
+    Dropout(0.1),
+    softmax
+)
+
+xs, ys = first(simple_loader(training))
+y_hat = mri_model(xs)
+iscorrect = Flux.onecold(y_hat) .== Flux.onecold(ys)
+acc = round(100 * mean(iscorrect); digits=2)
+```
+
+
+Then I define the stochastic gradient descent optimizer I want to use during training optimization:
+
+```julia
+learning_rate = 1e-3
+optimizer = Adam
+
+mri_optim = Flux.setup(
+    optimizer(learning_rate), 
+    mri_model
+);
+
+epochs = 10
+losses = []
+train_accs = []
+test_accs = []
+
+train_loader = simple_loader(training)
+for epoch in 1:epochs
+    model_loss = 0.0
+    for (x, y) in train_loader
+        curr_loss, gradients = Flux.withgradient(m -> Flux.crossentropy(m(x), y), mri_model)
+        model_loss += curr_loss / length(train_loader)
+        Flux.update!(mri_optim, mri_model, gradients[1])
+    end
+    train_acc = simple_accuracy(mri_model, training)
+    test_acc = simple_accuracy(mri_model, testing)
+    @info "After epoch = $epoch" model_loss train_acc test_acc
+end
+```
+
